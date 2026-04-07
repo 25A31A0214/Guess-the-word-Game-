@@ -3,11 +3,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>
-
 #define MAX_WORDS 30
-
 int main() {
-    // Large meaningful dictionary (5-letter words)
+    
     char *words[MAX_WORDS] = {
         "APPLE", "BRAVE", "CLOUD", "DREAM", "EARTH",
         "FLAME", "GRACE", "HOUSE", "IMAGE", "JUICE",
@@ -26,7 +24,7 @@ int main() {
 
         int index;
 
-        // pick unused word
+        
         do {
             index = rand() % MAX_WORDS;
         } while (used[index] == 1);
@@ -44,7 +42,7 @@ int main() {
         int attempts = 10;
         int correct = 0;
 
-        // initialize blanks
+
         for (int i = 0; i < length; i++)
             guess[i] = '_';
         guess[length] = '\0';
@@ -67,7 +65,7 @@ int main() {
 
             int found = 0, already = 0;
 
-            // check already guessed
+    
             for (int i = 0; i < length; i++) {
                 if (guess[i] == ch) {
                     already = 1;
@@ -79,8 +77,6 @@ int main() {
                 printf("Already guessed '%c'\n", ch);
                 continue;
             }
-
-            // check in word
             for (int i = 0; i < length; i++) {
                 if (word[i] == ch) {
                     guess[i] = ch;

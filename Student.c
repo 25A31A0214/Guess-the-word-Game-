@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -8,10 +7,12 @@ int main() {
     char guess[20];
     char ch;
     int i, length, attempts = 6;
-    int correct = 0, found;
+    int correct = 0;
+    int found, already_guessed;
 
     length = strlen(word);
 
+    // Initialize guess with '_'
     for (i = 0; i < length; i++) {
         guess[i] = '_';
     }
@@ -33,15 +34,24 @@ int main() {
         }
 
         found = 0;
+        already_guessed = 0;
 
+        // Check if already guessed
         for (i = 0; i < length; i++) {
             if (guess[i] == ch) {
-                printf("You already guessed '%c'!\n", ch);
-                found = 1;
+                already_guessed = 1;
                 break;
             }
+        }
 
-            if (word[i] == ch && guess[i] == '_') {
+        if (already_guessed) {
+            printf("You already guessed '%c'!\n", ch);
+            continue;
+        }
+
+        // Check if character exists in word
+        for (i = 0; i < length; i++) {
+            if (word[i] == ch) {
                 guess[i] = ch;
                 correct++;
                 found = 1;
@@ -57,9 +67,9 @@ int main() {
     }
 
     if (correct == length)
-        printf("\n🎉 Congratulations! You guessed the word: %s\n", word);
+        printf("\nCongratulations! You guessed the word: %s\n", word);
     else
-        printf("\n💀 Game Over! The word was: %s\n", word);
+        printf("\nGame Over! The word was: %s\n", word);
 
     return 0;
 }

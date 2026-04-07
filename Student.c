@@ -1,8 +1,10 @@
+
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 int main() {
-    char word[] = "COMPUTER";   // Secret word
+    char word[] = "COMPUTER";
     char guess[20];
     char ch;
     int i, length, attempts = 6;
@@ -10,7 +12,6 @@ int main() {
 
     length = strlen(word);
 
-    // Initialize guessed word with underscores
     for (i = 0; i < length; i++) {
         guess[i] = '_';
     }
@@ -24,9 +25,22 @@ int main() {
         printf("\nEnter a letter: ");
         scanf(" %c", &ch);
 
+        ch = toupper(ch);
+
+        if (!isalpha(ch)) {
+            printf("Invalid input! Enter a letter.\n");
+            continue;
+        }
+
         found = 0;
 
         for (i = 0; i < length; i++) {
+            if (guess[i] == ch) {
+                printf("You already guessed '%c'!\n", ch);
+                found = 1;
+                break;
+            }
+
             if (word[i] == ch && guess[i] == '_') {
                 guess[i] = ch;
                 correct++;
@@ -43,9 +57,9 @@ int main() {
     }
 
     if (correct == length)
-        printf("\nCongratulations! You guessed the word: %s\n", word);
+        printf("\n🎉 Congratulations! You guessed the word: %s\n", word);
     else
-        printf("\nGame Over! The word was: %s\n", word);
+        printf("\n💀 Game Over! The word was: %s\n", word);
 
     return 0;
 }

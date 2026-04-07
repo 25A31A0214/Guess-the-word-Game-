@@ -1,75 +1,119 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_WORDS 30
 
 int main() {
-    char word[] = "COMPUTER";
-    char guess[20];
-    char ch;
-    int i, length, attempts = 6;
-    int correct = 0;
-    int found, already_guessed;
+    // Large meaningful dictionary (5-letter words)
+    char *words[MAX_WORDS] = {
+        "APPLE", "BRAVE", "CLOUD", "DREAM", "EARTH",
+        "FLAME", "GRACE", "HOUSE", "IMAGE", "JUICE",
+        "KNIFE", "LIGHT", "MIGHT", "NIGHT", "OCEAN",
+        "PLANT", "QUEEN", "RIVER", "STONE", "TRAIN",
+        "UNITY", "VOICE", "WATER", "YOUTH", "ZEBRA",
+        "SMILE", "PRIDE", "SHINE", "SWEET", "GREEN"
+    };
 
-    length = strlen(word);
+    int used[MAX_WORDS] = {0};
+    int used_count = 0;
 
-    // Initialize guess with '_'
-    for (i = 0; i < length; i++) {
-        guess[i] = '_';
-    }
-    guess[length] = '\0';
+    srand(time(0));
 
-    printf("---- GUESS THE WORD GAME ----\n");
+    while (used_count < MAX_WORDS) {
 
-    while (attempts > 0 && correct < length) {
-        printf("\nWord: %s", guess);
-        printf("\nAttempts left: %d", attempts);
-        printf("\nEnter a letter: ");
-        scanf(" %c", &ch);
+        int index;
 
-        ch = toupper(ch);
+        // pick unused word
+        do {
+            index = rand() % MAX_WORDS;
+        } while (used[index] == 1);
 
-        if (!isalpha(ch)) {
-            printf("Invalid input! Enter a letter.\n");
-            continue;
-        }
+        used[index] = 1;
+        used_count++;
 
-        found = 0;
-        already_guessed = 0;
+        char word[10];
+        strcpy(word, words[index]);
 
-        // Check if already guessed
-        for (i = 0; i < length; i++) {
-            if (guess[i] == ch) {
-                already_guessed = 1;
-                break;
+        int length = strlen(word);
+
+        char guess[10];
+        char ch;
+        int attempts = 10;
+        int correct = 0;
+
+        // initialize blanks
+        for (int i = 0; i < length; i++)
+            guess[i] = '_';
+        guess[length] = '\0';
+
+        printf("\n---- NEW WORD ----\n");
+        printf("This is a %d-letter word.\n", length);
+
+        while (attempts > 0 && correct < length) {
+            printf("\nWord: %s", guess);
+            printf("\nAttempts left: %d", attempts);
+            printf("\nEnter a letter: ");
+            scanf(" %c", &ch);
+
+            ch = toupper(ch);
+
+            if (!isalpha(ch)) {
+                printf("Invalid input!\n");
+                continue;
+            }
+
+            int found = 0, already = 0;
+
+            // check already guessed
+            for (int i = 0; i < length; i++) {
+                if (guess[i] == ch) {
+                    already = 1;
+                    break;
+                }
+            }
+
+            if (already) {
+                printf("Already guessed '%c'\n", ch);
+                continue;
+            }
+
+            // check in word
+            for (int i = 0; i < length; i++) {
+                if (word[i] == ch) {
+                    guess[i] = ch;
+                    correct++;
+                    found = 1;
+                }
+            }
+
+            if (found)
+                printf("Correct!\n");
+            else {
+                printf("Wrong!\n");
+                attempts--;
             }
         }
 
-        if (already_guessed) {
-            printf("You already guessed '%c'!\n", ch);
-            continue;
+        if (correct == length)
+            printf("\n🎉 You guessed: %s\n", word);
+        else
+            printf("\n💀 Game Over! The word was: %s\n", word);
+
+        if (used_count == MAX_WORDS) {
+            printf("\nNo more words left!\n");
+            break;
         }
 
-        // Check if character exists in word
-        for (i = 0; i < length; i++) {
-            if (word[i] == ch) {
-                guess[i] = ch;
-                correct++;
-                found = 1;
-            }
-        }
+        char choice;
+        printf("\nPlay next word? (y/n): ");
+        scanf(" %c", &choice);
 
-        if (found)
-            printf("Correct guess!\n");
-        else {
-            printf("Wrong guess!\n");
-            attempts--;
-        }
+        if (choice != 'y' && choice != 'Y')
+            break;
     }
-
-    if (correct == length)
-        printf("\nCongratulations! You guessed the word: %s\n", word);
-    else
-        printf("\nGame Over! The word was: %s\n", word);
 
     return 0;
 }
